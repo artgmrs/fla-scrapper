@@ -26,6 +26,10 @@ app.use(cors({
   }
 }));
 
+app.get('/', (req, res) => {
+  res.send('Hey this is my API running 🥳')
+})
+
 app.get('/proximo-jogo', async (req, res, next) => {
   const key = req.originalUrl;
   const cachedResponse = myCache.get(key);
