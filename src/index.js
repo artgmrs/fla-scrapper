@@ -12,9 +12,19 @@ const url = 'https://www.placardefutebol.com.br/time/flamengo/proximos-jogos';
 
 const app = express();
 
+var allowedDomains = ['http://localhost:5173', 'https://quando-o-flamengo-joga-es2brqzhb-artgmrs.vercel.app/'];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
-}))
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedDomains.indexOf(origin) === -1) {
+      let msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 app.get('/proximo-jogo', async (req, res, next) => {
   const key = req.originalUrl;
