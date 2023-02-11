@@ -12,7 +12,7 @@ const url = 'https://www.placardefutebol.com.br/time/flamengo/proximos-jogos';
 
 const app = express();
 
-var allowedDomains = ['http://localhost:5173', 'https://quando-o-flamengo-joga.vercel.app/'];
+var allowedDomains = ['http://localhost:5173', 'https://quando-o-flamengo-joga.vercel.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
