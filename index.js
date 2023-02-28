@@ -51,8 +51,6 @@ async function getNextGame() {
   const { data: html } = await axios.get(url, {
     headers: {
       Accept: 'application/json',
-      Origin: 'https://www.placardefutebol.com.br',
-      Referer: 'https://www.placardefutebol.com.br/',  
     },
   });
   const $ = cheerio.load(html);
@@ -79,7 +77,7 @@ const formatDate = (dataHora) => {
   let dataHoraFormatada;
   
   let valoresArray = dataHora.split('<br>');
-  let horasEMinutosArray = valoresArray[1].split(':');
+  let horasEMinutosArray = valoresArray[1].trim().split(':');
 
   let hoje = new Date();
 
@@ -87,12 +85,11 @@ const formatDate = (dataHora) => {
     dataHoraFormatada = new Date();
     dataHoraFormatada.setHours(horasEMinutosArray[0]);
     dataHoraFormatada.setMinutes(horasEMinutosArray[1]);
-    
   } else if (dataHora.includes('amanhã')) {
-    // @todo - testar
-    const amanha = hoje.setDate(hoje.getDate() + 1);
-    dataHoraFormatada = amanha;
-
+    dataHoraFormatada = new Date();
+    dataHoraFormatada.setDate(hoje.getDate() + 1);
+    dataHoraFormatada.setHours(horasEMinutosArray[0]);
+    dataHoraFormatada.setMinutes(horasEMinutosArray[1]);
   } else {
     let dataMesArray = valoresArray[0].slice(5).split('/'); 
 
@@ -101,6 +98,7 @@ const formatDate = (dataHora) => {
     dataHoraFormatada = finalDate;
   }
 
+  dataHoraFormatada.setSeconds(0);
   return dataHoraFormatada.toLocaleString('en-US') ;
 }
 
