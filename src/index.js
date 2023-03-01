@@ -5,6 +5,9 @@ const cors = require('cors');
 const PORT = 3000;
 var allowedDomains = ['http://localhost:5173', 'https://quando-o-flamengo-joga.vercel.app', 'https://www.quandoflamengojoga.com.br' ];
 
+const homeRoute = require('./Routes/HomeRoute');
+const proximoJogoRoute = require('./Routes/ProximoJogoRoute');
+
 const app = express();
 
 app.use(cors({
@@ -18,9 +21,6 @@ app.use(cors({
     return callback(null, true);
   }
 }));
-
-const homeRoute = require('./Routes/HomeRoute');
-const proximoJogoRoute = require('./Routes/ProximoJogoRoute');
 
 app.use('/', homeRoute);
 app.use('/proximo-jogo', proximoJogoRoute);
