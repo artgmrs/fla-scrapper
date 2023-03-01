@@ -1,53 +1,9 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const express = require('express');
-const cors = require('cors');
-const NodeCache = require( "node-cache" );
-const myCache = new NodeCache({
-  stdTTL: 86400,
-});
 
-const PORT = 3000;
-const url = 'https://www.placardefutebol.com.br/time/flamengo/proximos-jogos';
+const url = process.env['URL_SCRAPE'];
 
-const app = express();
-
-var allowedDomains = ['http://localhost:5173', 'https://quando-o-flamengo-joga.vercel.app', 'https://www.quandoflamengojoga.com.br' ];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    if (allowedDomains.indexOf(origin) === -1) {
-      let msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  }
-}));
-
-app.get('/', (req, res) => {
-  res.send('Hey this is my API running 🥳')
-})
-
-app.get('/proximo-jogo', async (req, res, next) => {
-  const key = req.originalUrl;
-  const cachedResponse = myCache.get(key);
-
-  if (cachedResponse) {
-    res.send(cachedResponse);
-    return next();
-  } else {
-    const retorno = await getNextGame();
-    myCache.set(key, retorno);  
-  
-    res.send(retorno);
-  }
-})
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}!`));
-
-async function getNextGame() {
+async function getNextGameAsync() {
   const { data: html } = await axios.get(url, {
     headers: {
       Accept: 'application/json',
@@ -102,3 +58,4 @@ const formatDate = (dataHora) => {
   return dataHoraFormatada.toLocaleString('en-US') ;
 }
 
+module.exports = getNextGameAsync;
