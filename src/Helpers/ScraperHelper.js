@@ -55,7 +55,7 @@ const formatDate = (dataHora) => {
   }
 
   dataHoraFormatada.setSeconds(0);
-  return dataHoraFormatada.toLocaleString('en-US') ;
+  return dataHoraFormatada;
 }
 
 module.exports = getNextGameAsync;
