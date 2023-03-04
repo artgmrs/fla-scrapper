@@ -56,7 +56,10 @@ const formatDate = (dataHora) => {
 
   dataLocal.setSeconds(0);
 
+  console.log('data local', dataLocal);
+
   var dataUTC = convertDateToUTC(dataLocal);
+  console.log('data utc', dataUTC);
 
   return dataUTC;
 }
