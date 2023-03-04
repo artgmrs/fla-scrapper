@@ -30,7 +30,7 @@ async function getNextGameAsync() {
 }
 
 const formatDate = (dataHora) => {
-  let dataHoraFormatada;
+  let dataLocal;
   
   let valoresArray = dataHora.split('<br>');
   let horasEMinutosArray = valoresArray[1].trim().split(':');
@@ -38,24 +38,40 @@ const formatDate = (dataHora) => {
   let hoje = new Date();
 
   if (dataHora.includes('hoje')) {
-    dataHoraFormatada = new Date();
-    dataHoraFormatada.setHours(horasEMinutosArray[0]);
-    dataHoraFormatada.setMinutes(horasEMinutosArray[1]);
+    dataLocal = new Date();
+    dataLocal.setHours(horasEMinutosArray[0]);
+    dataLocal.setMinutes(horasEMinutosArray[1]);
   } else if (dataHora.includes('amanhã')) {
-    dataHoraFormatada = new Date();
-    dataHoraFormatada.setDate(hoje.getDate() + 1);
-    dataHoraFormatada.setHours(horasEMinutosArray[0]);
-    dataHoraFormatada.setMinutes(horasEMinutosArray[1]);
+    dataLocal = new Date();
+    dataLocal.setDate(hoje.getDate() + 1);
+    dataLocal.setHours(horasEMinutosArray[0]);
+    dataLocal.setMinutes(horasEMinutosArray[1]);
   } else {
     let dataMesArray = valoresArray[0].slice(5).split('/'); 
 
     let finalDate = new Date(`${hoje.getFullYear()}/${dataMesArray[1]}/${dataMesArray[0]} ${horasEMinutosArray[0]}:${horasEMinutosArray[1]}`);
 
-    dataHoraFormatada = finalDate;
+    dataLocal = finalDate;
   }
 
-  dataHoraFormatada.setSeconds(0);
-  return dataHoraFormatada;
+  dataLocal.setSeconds(0);
+
+  var dataUTC = convertDateToUTC(dataLocal);
+
+  return dataUTC;
 }
+
+const convertDateToUTC = (date) => {
+  return new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds()
+    )
+  );
+} 
 
 module.exports = getNextGameAsync;
