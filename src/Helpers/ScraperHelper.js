@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { DateTime } = require("luxon");
 
 const url = process.env['URL_SCRAPE'];
 
@@ -35,46 +36,21 @@ const formatDate = (dataHora) => {
   let valoresArray = dataHora.split('<br>');
   let horasEMinutosArray = valoresArray[1].trim().split(':');
 
-  let hoje = new Date();
+  let hoje = DateTime.now();
 
   if (dataHora.includes('hoje')) {
-    dataLocal = new Date();
-    dataLocal.setHours(horasEMinutosArray[0]);
-    dataLocal.setMinutes(horasEMinutosArray[1]);
+    dataLocal = DateTime.now().setZone("America/Sao_Paulo").set({hour: horasEMinutosArray[0], minute: horasEMinutosArray[1]});
   } else if (dataHora.includes('amanhã')) {
-    dataLocal = new Date();
-    dataLocal.setDate(hoje.getDate() + 1);
-    dataLocal.setHours(horasEMinutosArray[0]);
-    dataLocal.setMinutes(horasEMinutosArray[1]);
+    dataLocal = DateTime.now().setZone("America/Sao_Paulo").plus({days: 1}).set({hour: horasEMinutosArray[0], minute: horasEMinutosArray[1]});
   } else {
     let dataMesArray = valoresArray[0].slice(5).split('/'); 
 
-    let finalDate = new Date(`${hoje.getFullYear()}/${dataMesArray[1]}/${dataMesArray[0]} ${horasEMinutosArray[0]}:${horasEMinutosArray[1]}`);
-
-    dataLocal = finalDate;
+    dataLocal = DateTime.local(hoje.year, dataMesArray[1], dataMesArray[0], horasEMinutosArray[0], horasEMinutosArray[1]).setZone("America/Sao_Paulo");
   }
 
-  dataLocal.setSeconds(0);
+  dataLocal = dataLocal.set({second: 0, millisecond: 0});
 
-  console.log('data local', dataLocal);
-
-  var dataUTC = convertDateToUTC(dataLocal);
-  console.log('data utc', dataUTC);
-
-  return dataUTC;
+  return dataLocal;
 }
-
-const convertDateToUTC = (date) => {
-  return new Date(
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      date.getUTCHours(),
-      date.getUTCMinutes(),
-      date.getUTCSeconds()
-    )
-  );
-} 
 
 module.exports = getNextGameAsync;
