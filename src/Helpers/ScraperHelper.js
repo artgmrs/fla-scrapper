@@ -36,16 +36,22 @@ const formatDate = (dataHora) => {
   let valoresArray = dataHora.split('<br>');
   let horasEMinutosArray = valoresArray[1].trim().split(':');
 
+  const horas = +horasEMinutosArray[0];
+  const minutos = +horasEMinutosArray[1];
+
   let hoje = DateTime.now();
 
   if (dataHora.includes('hoje')) {
-    dataLocal = DateTime.now().setZone("America/Sao_Paulo").set({hour: horasEMinutosArray[0], minute: horasEMinutosArray[1]});
+    dataLocal = DateTime.now().setZone("America/Sao_Paulo").set({hour: horas, minute: minutos});
   } else if (dataHora.includes('amanhã')) {
-    dataLocal = DateTime.now().setZone("America/Sao_Paulo").plus({days: 1}).set({hour: horasEMinutosArray[0], minute: horasEMinutosArray[1]});
+    dataLocal = DateTime.now().setZone("America/Sao_Paulo").plus({days: 1}).set({hour: horas, minute: minutos});
   } else {
-    let dataMesArray = valoresArray[0].slice(5).split('/'); 
+    let dataMesArray = valoresArray[0].slice(5).replace(',', '').trim().split('/'); 
 
-    dataLocal = DateTime.local(hoje.year, dataMesArray[1], dataMesArray[0], horasEMinutosArray[0], horasEMinutosArray[1]).setZone("America/Sao_Paulo");
+    const mes = +dataMesArray[1];
+    const dia = +dataMesArray[0];
+    
+    dataLocal = DateTime.local(hoje.year, mes, dia, horas, minutos).setZone("America/Sao_Paulo");
   }
 
   dataLocal = dataLocal.set({second: 0, millisecond: 0});
